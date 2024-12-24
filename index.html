@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amigo Invisible - ¡Descubre Quién Soy!</title>
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600&family=Pacifico&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Baloo 2', cursive;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+            background-color: #ffebcd; /* Mismo fondo */
+        }
+
+        /* Pantalla de inicio */
+        #inicio {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            animation: fadeIn 1.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        #inicio h1 {
+            font-size: 3rem;
+            font-family: 'Pacifico', cursive;
+            text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(to right, #ff7f50, #ff6347, #ffa07a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        #inicio p {
+            font-size: 1.5rem;
+            color: #333;
+            margin: 20px 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            background: linear-gradient(to right, #ffa07a, #ff6347, #ff7f50);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        #inicio button {
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            background: linear-gradient(to right, #6a11cb, #2575fc); /* Degradado azul-morado */
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        #inicio button:hover {
+            background: linear-gradient(to right, #2575fc, #6a11cb);
+            transform: scale(1.1);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Texto progresivo */
+        #texto {
+            display: none;
+            height: 100vh;
+            font-size: 1.5rem;
+            color: #333;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .linea {
+            opacity: 0;
+            animation: fadeInText 4.5s ease-in-out forwards;
+            font-size: 4rem; /* Tamaño del texto */
+            font-family: 'Pacifico', cursive; /* Fuente llamativa */
+            background: linear-gradient(to right, #ff7f50, #ff6347, #ffa07a); /* Degradado */
+            -webkit-background-clip: text; /* Para aplicar el degradado al texto */
+            -webkit-text-fill-color: transparent; /* Hace que el degradado sea visible */
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); /* Sombra suave */
+            margin: 20px; /* Espaciado entre líneas */
+        }
+
+        @keyframes fadeInText {
+            0% {
+                opacity: 0;
+            }
+            20% {
+                opacity: 1;
+            }
+            80% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Pantalla de inicio -->
+    <div id="inicio">
+        <h1>🎉 ¡Benvingut al Joc de l'Amic Invisible! 🎉</h1>
+        <p>Fes clic al botó per començar i descobrir qui sóc.</p>
+        <button onclick="empezarJuego()">Comenzar</button>
+    </div>
+
+    <!-- Contenedor de texto progresivo -->
+    <div id="texto"></div>
+
+    <script>
+        function empezarJuego() {
+            // Ocultar la pantalla inicial
+            const inicio = document.getElementById('inicio');
+            inicio.style.display = 'none';
+
+            // Mostrar el contenedor de texto
+            const texto = document.getElementById('texto');
+            texto.style.display = 'flex';
+
+            // Array con las líneas de texto
+            const lineas = [
+                "¡Benvingut! 🎉",
+                "Aquesta és la meva pista per endevinar qui és el teu amic invisible. jejej",
+                "Espero que siguis en Manel",
+                "El teu objectiu serà completar 2 reptes diferents",
+                "Cada repte et dirà una pista de qui soc 🕵️",
+                "Un cop acabats tots els reptes hauràs de dir qui és el teu amic invisible",
+                "Estàs a punt? Pues som-hi! 🚀",
+                "El teu primer repte serà fer un memory amb temàtica de la família vinyes. ",
+                "Completa'l i et donaré la primera pista"
+            ];
+
+            // Mostrar cada línea y luego desaparecerla
+            let index = 0;
+            const mostrarLinea = () => {
+                if (index < lineas.length) {
+                    texto.innerHTML = ''; // Limpia el contenedor
+                    const p = document.createElement('p');
+                    p.classList.add('linea');
+                    p.innerText = lineas[index];
+                    texto.appendChild(p);
+
+                    index++;
+                    setTimeout(mostrarLinea, 5000); // Tiempo para cada frase
+                }
+                else{
+                    window.location.href = "memory.html";
+                }
+            };
+
+            mostrarLinea();
+        }
+    </script>
+</body>
+</html>

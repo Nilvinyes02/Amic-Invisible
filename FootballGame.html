@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lanzar Pelota a la Portería</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #4caf50;
+        }
+        canvas {
+            border: 2px solid #000;
+            background: #90ee90;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="gameCanvas" width="800" height="400"></canvas>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        const goal = {
+            x: 750,
+            y: 150,
+            width: 30,
+            height: 100
+        };
+
+        const ball = {
+            x: 50,
+            y: 200,
+            radius: 15,
+            dx: 0,
+            dy: 0,
+            isMoving: false,
+            image: new Image()
+        };
+        ball.image.src = 'https://upload.wikimedia.org/wikipedia/commons/d/d3/Soccerball.svg';
+
+        const obstacles = [
+            { x: 300, y: 100, width: 50, height: 50 },
+            { x: 500, y: 250, width: 50, height: 50 }
+        ];
+
+        function drawGoal() {
+            ctx.fillStyle = 'red';
+            ctx.fillRect(goal.x, goal.y, goal.width, goal.height);
+        }
+
+        function drawBall() {
+            ctx.drawImage(ball.image, ball.x - ball.radius, ball.y - ball.radius, ball.radius * 2, ball.radius * 2);
+        }
+
+        function drawObstacles() {
+            ctx.fillStyle = 'gray';
+            obstacles.forEach(obstacle => {
+                ctx.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+            });
+        }
+
+        function checkCollisions() {
+            for (const obstacle of obstacles) {
+                if (
+                    ball.x + ball.radius > obstacle.x &&
+                    ball.x - ball.radius < obstacle.x + obstacle.width &&
+                    ball.y + ball.radius > obstacle.y &&
+                    ball.y - ball.radius < obstacle.y + obstacle.height
+                ) {
+                    ball.dx = 0;
+                    ball.dy = 0;
+                    ball.isMoving = false;
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function checkGoal() {
+            if (
+                ball.x + ball.radius > goal.x &&
+                ball.y > goal.y &&
+                ball.y < goal.y + goal.height
+            ) {
+                alert('¡Gol!');
+                resetBall();
+            }
+        }
+
+        function update() {
+            if (ball.isMoving) {
+                ball.x += ball.dx;
+                ball.y += ball.dy;
+
+                if (ball.x + ball.radius > canvas.width || ball.x - ball.radius < 0 ||
+                    ball.y + ball.radius > canvas.height || ball.y - ball.radius < 0 ||
+                    checkCollisions()) {
+                    ball.dx = 0;
+                    ball.dy = 0;
+                    ball.isMoving = false;
+                }
+
+                checkGoal();
+            }
+        }
+
+        function resetBall() {
+            ball.x = 50;
+            ball.y = 200;
+            ball.dx = 0;
+            ball.dy = 0;
+            ball.isMoving = false;
+        }
+
+        function drawField() {
+            ctx.fillStyle = '#4caf50';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.strokeStyle = '#fff';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(50, 50, canvas.width - 100, canvas.height - 100);
+            ctx.beginPath();
+            ctx.moveTo(canvas.width / 2, 50);
+            ctx.lineTo(canvas.width / 2, canvas.height - 50);
+            ctx.stroke();
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawField();
+            drawGoal();
+            drawObstacles();
+            drawBall();
+        }
+
+        canvas.addEventListener('click', (event) => {
+            if (!ball.isMoving) {
+                const rect = canvas.getBoundingClientRect();
+                const mouseX = event.clientX - rect.left;
+                const mouseY = event.clientY - rect.top;
+                const angle = Math.atan2(mouseY - ball.y, mouseX - ball.x);
+                ball.dx = Math.cos(angle) * 5;
+                ball.dy = Math.sin(angle) * 5;
+                ball.isMoving = true;
+            }
+        });
+
+        function gameLoop() {
+            update();
+            draw();
+            requestAnimationFrame(gameLoop);
+        }
+
+        gameLoop();
+    </script>
+</body>
+</html>
